@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import sunny from "../../assets/sunny.svg";
 import humidity from "../../assets/humidity.svg";
 import windy from "../../assets/cloudy-windy.svg";
-// import URL from "../../Utils";
+import {api_url_generator, weather_icon_fetch , } from "../../Utils";
 import "./weather.css";
 
 const Weather = () => {
@@ -10,15 +9,18 @@ const Weather = () => {
   const [error, setError] = useState(null);
   const [searchedCity, setSearchedCity] = useState("delhi");
   const [inputCity, setInputCity] = useState("");
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=11b06a1f1abc4a18b7e686b19932f556`;
   const temp = data?.main?.temp - 273.15;
+  const icon = data?.weather[0].icon; 
+  const weather = data?.weather[0].main;
+
+  const api_url = api_url_generator(searchedCity);
+  const icon_url = weather_icon_fetch(icon)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(URL);
+        const response = await fetch(api_url);
         const data = await response.json();
-        console.log(data);
 
         if (!response.ok || data.cod === "404") {
           setError("City not found");
@@ -28,7 +30,6 @@ const Weather = () => {
           setError(null);
         }
       } catch (error) {
-        console.log(error);
       }
     };
 
@@ -39,8 +40,6 @@ const Weather = () => {
     e.preventDefault();
     setSearchedCity(inputCity);
   };
-
-  console.log(`${searchedCity} <------`);
 
   return (
     <div className="weather">
@@ -68,8 +67,9 @@ const Weather = () => {
         </div>
         <div className="weather-info">
           <div className="weather-img">
-            <img src={sunny} alt="" />
+            <img src={icon_url} alt="" />
           </div>
+          <p>{weather}</p>
 
           {error && <p className="error-div"> {error} </p>}
 
