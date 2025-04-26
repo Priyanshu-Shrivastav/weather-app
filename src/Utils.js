@@ -1,0 +1,1 @@
+const URL = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid=11b06a1f1abc4a18b7e686b19932f556";
